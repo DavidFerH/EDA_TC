@@ -1,0 +1,4 @@
+https://www.youtube.com/watch?v=2Ti5yvumFTU&t=678s&ab_channel=JacobSorber
+https://www.educba.com/hashing-function-in-c/
+https://stackoverflow.com/questions/7666509/hash-function-for-string
+http://www.cse.yorku.ca/~oz/hash.html
