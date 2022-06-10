@@ -319,4 +319,5 @@ void mostrarMenu() {
             printf("Has escogido una opción incorrecta\n\n");
        
     }
+    mostrarMenu();
 }
