@@ -97,7 +97,9 @@ void mostrarClientePorID(char dni[]) {
 
 }
 
-/* Metodo auxiliar para inserción de 5 elementos */
+/* 
+    Metodo auxiliar para inserción de 5 elementos
+*/
 cliente * create_mock_client() {
 
     /* Reservar memoria */
