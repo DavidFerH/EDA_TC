@@ -19,7 +19,9 @@ int precargado=0;
 bool hashTableInit();
 bool comprobarRegistro(char *ID);
 unsigned int hashFunction(char *ID);
-bool insertarCliente();
+void add_new_client();
+void add_client(cliente *cli);
+void add_cliente();
 void mostrarClientePorID(char dni[]);
 void mostrarClientes();
 void ficheroClientes ();
@@ -28,7 +30,7 @@ void buscarCliente();
 void mostrarMenu();
 
 void main() {
-    hashTableInit();    
+    hashTableInit();
     mostrarMenu();
 }
 
@@ -58,6 +60,84 @@ unsigned int hashFunction(char *ID) {
 
     hash = hash % MAX_SIZE;
     return hash;
+}
+
+/*
+    Método para añadir un nuevo registro de cliente a la tabla hash
+*/
+
+void add_new_client() {
+
+    char nombre[] = "";
+    char ID[] = "";
+    char vehiculo[] = "";
+    char matricula[] = "";
+
+    printf("\nIntroduzca el nombre del cliente: ");
+    scanf("%s", &nombre);
+    printf("\nIntroduzca el DNI del cliente: ");
+    scanf("%s", &ID);
+    printf("\nIntroduzca el vehiculo del cliente: ");
+    scanf("%s", &vehiculo);
+    printf("\nIntroduzca el matricula del cliente: ");
+    scanf("%s", &matricula);
+
+    cliente *cli = (cliente*) malloc(sizeof(cliente));
+
+    cli->ID = ID;
+    cli->nombre = nombre;
+    cli->vehiculo = vehiculo;
+    cli->matricula = matricula;
+
+    /* Se calcula el hash para saber la posición */
+    unsigned long hashIndex = hashFunction(cli->ID);
+    int posBusc = 0;
+
+    /* solución para colisiones. (En el caso de usarse) */
+    while(hashTable[hashIndex] != NULL && strcmp(hashTable[hashIndex]->ID, cli->ID) != 0) {
+        /* Existe elemento en la posición y no coincide su ID */
+        /* se busca la siguiente posición vacía */
+        ++ hashIndex;
+		
+        /* Si se llega al final se empieza desde el principio */
+        hashIndex %= MAX_SIZE;
+
+        posBusc++;
+
+        if(posBusc==MAX_SIZE) {
+            printf("No ha podido insertarse el elemento ya que la tabla está llena");
+            return;
+        }
+    }
+    
+	/* Se almacena */
+    hashTable[hashIndex] = cli;
+}
+
+void add_client(cliente *cli) {
+    /* Se calcula el hash para saber la posición */
+        unsigned long hashIndex = hashFunction(cli->ID);
+        int posBusc = 0;
+
+        /* solución para colisiones. (En el caso de usarse) */
+        while(hashTable[hashIndex] != NULL && strcmp(hashTable[hashIndex]->ID, cli->ID) != 0) {
+            /* Existe elemento en la posición y no coincide su ID */
+            /* se busca la siguiente posición vacía */
+            ++ hashIndex;
+            
+            /* Si se llega al final se empieza desde el principio */
+            hashIndex %= MAX_SIZE;
+
+            posBusc++;
+
+            if(posBusc==MAX_SIZE) {
+                printf("No ha podido insertarse el elemento ya que la tabla está llena");
+                return;
+            }
+        }
+        
+    /* Se almacena */
+    hashTable[hashIndex] = cli;
 }
 
 /* 
@@ -103,8 +183,7 @@ void mostrarClientePorID(char dni[]) {
 cliente * create_mock_client() {
 
     /* Reservar memoria */
-    size_t size = sizeof(cliente);
-    cliente *item = (cliente *) malloc(size);
+    cliente *item = (cliente*) malloc(sizeof(cliente));
 
     item->ID = "35223223L";
     item->matricula = "4445LYJ";
@@ -156,36 +235,6 @@ cliente * create_mock_client5() {
     item->nombre = "Luis Rodríguez Cagiao";
 
     return item;
-}
-
-
-/*
-    Método para añadir un registro de cliente a la tabla hash
-*/
-
-void add_client(cliente *item) {  
-    /* Se calcula el hash para saber la posición */
-    unsigned long hashIndex = hashFunction(item->ID);
-    int posBusc = 0;
-
-    /* solución para colisiones. (En el caso de usarse) */
-    while(hashTable[hashIndex] != NULL && strcmp(hashTable[hashIndex]->ID,item->ID)!=0) {
-        /* Existe elemento en la posición y no coincide su ID */
-        /* se busca la siguiente posición vacía */
-        ++ hashIndex;
-		
-        /* Si se llega al final se empieza desde el principio */
-        hashIndex %= MAX_SIZE;
-
-        posBusc++;
-
-        if(posBusc==MAX_SIZE) {
-            printf("No ha podido insertarse el elemento ya que la tabla está llena");
-            return;
-        }
-    }
-	/* Se almacena */
-    hashTable[hashIndex] = item;
 }
 
 /* 
@@ -267,7 +316,7 @@ void mostrarMenu() {
     printf("\n\nPractica de algoritmos\n");
     printf("Elige entre las opciones:\n");
 
-    if(precargado==0) {
+    if(precargado == 0) {
         printf("1. Precargar datos de la tabla hash (disponible)\n");
     } else {
         printf("1. Precargar datos de la tabla hash (no disponible)\n");
@@ -284,10 +333,10 @@ void mostrarMenu() {
 
     switch (valor){
         case 1:
-            if(precargado==0){ 
+            if(precargado == 0){ 
                 printf("Precargando datos...\n\n");
                 precargarDatos();
-                precargado=1;
+                precargado = 1;
             }else{
                 printf("Ya se ha realizado la precarga. Escoja otra opcion\n\n");
             }
@@ -304,8 +353,8 @@ void mostrarMenu() {
             break;
 
         case 4:
-            printf("Añadiendo datos de un nuevo cliente...\n\n");
-            printf("Funcionalidad no realizada");
+            add_new_client();
+            printf("\nAñadiendo datos de un nuevo cliente...\n");
             break;
 
         case 5:
@@ -319,5 +368,6 @@ void mostrarMenu() {
             printf("Has escogido una opción incorrecta\n\n");
        
     }
+
     mostrarMenu();
 }
