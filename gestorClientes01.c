@@ -1,3 +1,11 @@
+/**************************
+
+David Ferrero Herrera, Verónica Bravo Alonso y Laura Cortés Lomas
+06/06/2022 - 12/06/2022
+Estructura de Datos y Algoritmos
+Trabajo Colaborativo UD6
+
+***************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -68,19 +76,19 @@ unsigned int hashFunction(char *ID) {
 
 void add_new_client() {
 
-    char nombre[] = "";
-    char ID[] = "";
-    char vehiculo[] = "";
-    char matricula[] = "";
+    char *nombre = malloc(sizeof(char)*100);
+    char *ID = malloc(sizeof(char)*20);
+    char *vehiculo = malloc(sizeof(char)*100);
+    char *matricula = malloc(sizeof(char)*20);
 
     printf("\nIntroduzca el nombre del cliente: ");
-    scanf("%s", &nombre);
+    scanf("%s", nombre);
     printf("\nIntroduzca el DNI del cliente: ");
-    scanf("%s", &ID);
+    scanf("%s", ID);
     printf("\nIntroduzca el vehiculo del cliente: ");
-    scanf("%s", &vehiculo);
+    scanf("%s", vehiculo);
     printf("\nIntroduzca el matricula del cliente: ");
-    scanf("%s", &matricula);
+    scanf("%s", matricula);
 
     cliente *cli = (cliente*) malloc(sizeof(cliente));
 
@@ -144,7 +152,7 @@ void add_client(cliente *cli) {
     Método que obtiene y muestra el cliente por el ID (dni) dado
 */
 
-void mostrarClientePorID(char dni[]) {
+void mostrarClientePorID(char *dni) {
     /* obtenemos el hash a partir del ID (DNI) */
     unsigned long hash = hashFunction(dni);  
     cliente * cli = NULL;
@@ -279,18 +287,18 @@ printf("\t\t\t\t Listado de clientes almacenados en la base de datos: \n");
 */
 
 void ficheroClientes () {
-    freopen ("clientes.txt", "w", stdout);
+    FILE* f=fopen("clientes.txt", "w");
     for(int i = 0; i< MAX_SIZE; i++) {
 	   if(hashTable[i] != NULL) {
-          printf("CLIENTE %d \n", i);
-          printf("Nombre: %s \n", hashTable[i]->nombre);
-          printf("DNI: %s \n", hashTable[i]->ID);
-          printf("Vehiculo: %s  \n", hashTable[i]->vehiculo);
-          printf("Matricula: %s \n", hashTable[i]->matricula);
-              printf("\n");
+          fprintf(f,"CLIENTE %d \n", i);
+          fprintf(f,"Nombre: %s \n", hashTable[i]->nombre);
+          fprintf(f,"DNI: %s \n", hashTable[i]->ID);
+          fprintf(f,"Vehiculo: %s  \n", hashTable[i]->vehiculo);
+          fprintf(f,"Matricula: %s \n", hashTable[i]->matricula);
+               fprintf(f,"\n");
         }
     }
-    fclose(stdout);
+    fclose(f);
 }
 
 
@@ -299,11 +307,12 @@ void ficheroClientes () {
 */
 
 void buscarCliente() {
-    char dni;
-
+    char *dni= malloc(sizeof(char) * 50);
+    
     printf("\nBúsqueda de cliente por ID(dni)");
     printf("\nPor favor, indique el DNI del cliente a buscar:");
-    scanf("%s",&dni);
+    scanf("%s",dni);
+    
     mostrarClientePorID(dni);
 }
 
